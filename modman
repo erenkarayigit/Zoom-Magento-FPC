@@ -1,0 +1,8 @@
+app/code/local/Ezapps/* app/code/local/Ezapps
+app/design/adminhtml/default/default/layout/* app/design/adminhtml/default/default/layout
+app/design/adminhtml/default/default/template/* app/design/adminhtml/default/default/template
+app/design/frontend/base/default/layout/* app/design/frontend/base/default/layout
+app/design/frontend/base/default/template/* app/design/frontend/base/default/template
+app/etc/modules/* app/etc/modules
+js/* js
+ezzoom.php / 
