@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * EZAPPS Zoom Handler
  *
@@ -12,19 +12,19 @@ class Ezapps_Zoom_Handler
 {
 
 	private static $instance;
-	private static $ZOOM_ROOT;               
-	private static $SERVER;			
-	private static $REQUEST;		
+	private static $ZOOM_ROOT;
+	private static $SERVER;
+	private static $REQUEST;
 	private static $AGENT;
 	private static $GET_POSTFIX;
-        private static $base_uri;  	
-	private static $_start; 
+        private static $base_uri;
+	private static $_start;
 
 	const		DS                      = DIRECTORY_SEPARATOR;
-	
+
 	private static $ZOOM_INDEX              = 'ZOOM_INDEX';
 	private static $GET_STEM		= 'zoom_';
-	private static $APC_KEY			= 'ZOOM';	
+	private static $APC_KEY			= 'ZOOM';
 	private static $ZOOM_CLIENT_DATA	= 'ZOOM_CLIENT_MATCH_DATA';
 	private static $HOLE_START		= '<span id="hole-';
         private static $HOLE_END_PRE            = '-pre"></span>';
@@ -42,7 +42,7 @@ class Ezapps_Zoom_Handler
 	private static $_no_client_data_found 	= false;
 
 	function __construct() {
-		
+
 		self::$ZOOM_ROOT   = 'var' . DIRECTORY_SEPARATOR . 'zoom';
 		self::$SERVER      = $_SERVER["SERVER_NAME"];
 		self::$REQUEST     = $_SERVER["REQUEST_URI"];
@@ -76,7 +76,7 @@ class Ezapps_Zoom_Handler
 
 		self::$DEFAULT_FILL['default']['cart'] = '<a href="{{unsecure_url}}checkout/cart/">0 items in your cart</a>';*/
 
-		
+
 
 	}
 
@@ -107,14 +107,14 @@ class Ezapps_Zoom_Handler
 			);
 	}
 
-	public static function getInstance() { 
+	public static function getInstance() {
 
-    		if(!self::$instance) { 
-		      self::$instance = new self(); 
-		    } 
+    		if(!self::$instance) {
+		      self::$instance = new self();
+		    }
 
-		return self::$instance; 
-	} 
+		return self::$instance;
+	}
 
 	public static function tryRetrieveCacheFile() {
 
@@ -126,7 +126,7 @@ class Ezapps_Zoom_Handler
 			$_SERVER["REQUEST_URI"] = $test_for_rewrites[0];
 			$args = explode("/", $test_for_rewrites[1]);
 			for ($i = 0; $i < count($args); $i=$i+2)
-				$_GET[$args[$i]] = $args[$i+1]; 
+				$_GET[$args[$i]] = $args[$i+1];
 		}
 
 		$client_matches = null;
@@ -144,7 +144,7 @@ class Ezapps_Zoom_Handler
 			if (is_null($client_matches))
                                         $apc_grab = false;
                 }
- 
+
 		if (is_null($client_matches)) {
 
 			$zoom_client_file = self::$ZOOM_ROOT . self::DS . self::$STORE . self::DS . self::$ZOOM_CLIENT_DATA;
@@ -156,14 +156,14 @@ class Ezapps_Zoom_Handler
 					apc_add($apckey, $client_matches);
 			}
 		}
-		
+
 		if ($client_matches) {
 		        $zoom_package  = self::checkClient($client_matches['package']);
 		        $zoom_template = self::checkClient($client_matches['template']);
 		        $zoom_theme    = self::checkClient($client_matches['theme']);
 
         		if ($zoom_package != '' || $zoom_template != '' || $zoom_theme != '') {
-                		$file_to_check = self::$ZOOM_ROOT . self::DS .  self::$STORE . 
+                		$file_to_check = self::$ZOOM_ROOT . self::DS .  self::$STORE .
 					     self::DS . ($zoom_package  != '' ? $zoom_package  : 'default') .
                                              self::DS . ($zoom_template != '' ? $zoom_template : 'default') .
                                              self::DS . ($zoom_theme    != '' ? $zoom_theme    : 'default') .
@@ -179,7 +179,7 @@ class Ezapps_Zoom_Handler
 		$params   = array();
 		$files    = array();
 
-		list($page_name) =  array_keys($client_matches['controls']['page']);	
+		list($page_name) =  array_keys($client_matches['controls']['page']);
 
 		$p_track  = 0;
 
@@ -197,22 +197,22 @@ class Ezapps_Zoom_Handler
 				$page = array($page_name => $_GET[$page_name]);
 				$files[] = self::paramsToFile(array_merge($page, $params), $file_to_check);
 			} else $files[] = self::paramsToFile(array_merge(array($page_name => 1), $params), $file_to_check);
-	
+
 		} else if (array_key_exists($page_name, $_GET))
 			$files[] = self::paramsToFile(array($page_name => $_GET[$page_name]), $file_to_check);
 		else {
 			$files[] = self::paramsToFile(array($page_name => 1), $file_to_check);
 		}
-	
-		$page = false;			
+
+		$page = false;
 
 
-		$files[] = $file_to_check; 
+		$files[] = $file_to_check;
 
                 if (preg_match('/MSIE [1-6]/i',self::$AGENT)) $gzip = false; else $gzip = true;
 		foreach ($files as $attempt) {
 
-			if ($gzip && file_exists($attempt . ".gz")) 
+			if ($gzip && file_exists($attempt . ".gz"))
         			$page = file_get_contents($attempt . ".gz");
 			else if (file_exists($attempt))
         			$page = file_get_contents($attempt);
@@ -237,7 +237,7 @@ class Ezapps_Zoom_Handler
 
 	}
 
-	private function paramsToFile($params, $uri) {
+	private static function paramsToFile($params, $uri) {
 
 		if (count($params) > 0) {
 
@@ -249,13 +249,13 @@ class Ezapps_Zoom_Handler
                         }
 
                         $uri .= self::DS . self::$ZOOM_INDEX;
-			
+
                         return str_replace(self::DS . self::DS, self::DS, $uri);
-			
+
 
 		} else return array();
 
-	}	
+	}
 
 	public static function punchHoles($buffer) {
 
@@ -282,7 +282,7 @@ class Ezapps_Zoom_Handler
 					$id = Mage::helper('ezzoom')->saveFile(self::$base_uri, $punched_file);
 				}
 
-				Mage::helper('ezzoom')->setRenderTime(microtime(true) - self::$_start);	
+				Mage::helper('ezzoom')->setRenderTime(microtime(true) - self::$_start);
 
 				$start = self::$TAG_START;
 				$end   = self::$TAG_END;
@@ -291,9 +291,9 @@ class Ezapps_Zoom_Handler
 			}
 		}
 		return $buffer;
-		
+
 	}
-	
+
 	public static function startBuffer() {
 		ob_start(array(get_class(self::getInstance()), 'punchHoles'));
 	}
@@ -327,7 +327,7 @@ if (!(array_key_exists('___store', $_GET) && array_key_exists('___from_store', $
 		$zoom_controller->tryRetrieveCacheFile();
 
 		$zoom_controller->startBuffer();
-	} 
+	}
 }
 
 ?>
