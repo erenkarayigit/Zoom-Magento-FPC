@@ -11,31 +11,39 @@
 
 class Ezapps_Zoom_Model_Cron extends Mage_Core_Model_Abstract
 {
+    protected static $has_ran = false;
 
-     protected static $has_ran = false;
-
-     public static function cleanCache() {
-
-               if(self::$has_ran != true && self::isLocked() != true){
+    /**
+     * Clean the EZ Zoom page cache.
+     *
+     * @return void
+     */
+    public static function cleanCache() {
+        if(self::$has_ran != true && self::isLocked() != true) {
 			Mage::helper('ezzoom')->flushCache(time());
 			Mage::app()->removeCache('ezzoom_cron_lock');
+
 			self::$has_ran = true;
-               } 
+        }
+    }
 
-     }
+    /**
+     * Check if the EZ Zoom cron is locked.
+     *
+     * @return boolean
+     */
+    public static function isLocked() {
+        $time = Mage::app()->loadCache('ezzoom_cron_lock');
 
-     public static function isLocked(){
-                $time = Mage::app()->loadCache('ezzoom_cron_lock');
-                if ($time){
-                        if((time() - $time) > 1200) 
-				Mage::app()->removeCache('ezzoom_cron_lock');
+        if ($time) {
+            if ( (time() - $time) > 1200 )
+                Mage::app()->removeCache('ezzoom_cron_lock');
 
-                        return true;
-                }
-        
-                Mage::app()->saveCache(time(), 'ezzoom_cron_lock', array(), 1200);
-                return false;
-     }
+            return true;
+        }
 
+        Mage::app()->saveCache(time(), 'ezzoom_cron_lock', array(), 1200);
 
+        return false;
+    }
 }

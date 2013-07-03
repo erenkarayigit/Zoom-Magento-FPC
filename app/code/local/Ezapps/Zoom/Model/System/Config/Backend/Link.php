@@ -11,27 +11,24 @@
 
 class Ezapps_Zoom_Model_System_Config_Backend_Link extends Mage_Core_Model_Abstract
 {
-
-    public function toOptionArray()
-    {
+    public function toOptionArray() {
         $result = array();
-        $result[] = array(
-                'label' => "Off",
-                'value' => "0"
-            );
-        $result[] = array(
-                'label' => "Homepage",
-                'value' => "1"
-            );
-        $result[] = array(
-                'label' => "All Pages",
-                'value' => "2"
-            );
 
+        $result[] = array(
+            'label' => "Off",
+            'value' => "0"
+        );
 
+        $result[] = array(
+            'label' => "Homepage",
+            'value' => "1"
+        );
+
+        $result[] = array(
+            'label' => "All Pages",
+            'value' => "2"
+        );
 
         return $result;
     }
-
-
 }

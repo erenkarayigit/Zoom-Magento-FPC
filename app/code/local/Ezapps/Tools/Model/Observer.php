@@ -1,5 +1,4 @@
 <?php
-
 /**
  * EZAPPS Notification Observer
  *
@@ -8,7 +7,6 @@
  * @author     Ezra Morse (http://www.ezapps.ca)
  * @license:   EPL 1.0
  */
-
 class Ezapps_Tools_Model_Observer extends Mage_AdminNotification_Model_Observer
 {
     /**
@@ -16,23 +14,14 @@ class Ezapps_Tools_Model_Observer extends Mage_AdminNotification_Model_Observer
      *
      * @param Varien_Event_Observer $observer
      */
-    public function preDispatch(Varien_Event_Observer $observer)
-    {
-
+    public function preDispatch(Varien_Event_Observer $observer) {
         if (Mage::getSingleton('admin/session')->isLoggedIn()) {
-
             $feedModel  = Mage::getModel('eztools/feed');
-
             $feedModel->checkUpdate();
-
         }
-
     }
 
     public function initFeed(Varien_Event_Observer $observer) {
-
-	Mage::helper('eztools')->initAllFeedInfo();	
-
+        Mage::helper('eztools')->initAllFeedInfo();
     }
-
 }
